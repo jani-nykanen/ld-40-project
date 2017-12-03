@@ -134,10 +134,15 @@ void pl_update(PLAYER* pl, float tm)
 /// < pl Player
 void pl_draw(PLAYER* pl)
 {
-    if(pl->hurtTimer <= 0.0f || (int)floor(pl->hurtTimer / 4.0f) % 2 == 0)
+    int row = pl->spr.row;
+    if(pl->hurtTimer > 0.0f && (int)floor(pl->hurtTimer / 4.0f) % 2 == 1)
     {
-        spr_draw(&pl->spr,bmpPlayer,pl->pos.x-6,pl->pos.y-16,0);
+        pl->spr.row += 3;
     }
+
+    spr_draw(&pl->spr,bmpPlayer,pl->pos.x-6,pl->pos.y-16,0);
+
+    pl->spr.row = row;
 }
 
 /// Make him/her suffer

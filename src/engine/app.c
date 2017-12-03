@@ -9,7 +9,6 @@
 #include "controls.h"
 #include "graphics.h"
 #include "assets.h"
-#include "audio.h"
 
 #include "stdlib.h"
 #include "math.h"
@@ -57,6 +56,47 @@ static CONFIG config;
 /// Joystick
 static SDL_Joystick* joy;
 
+/// Ask if the user wants to quit
+static void ask_to_quit()
+{
+    const SDL_MessageBoxButtonData buttons[] = {
+        { 0, 0, "Yeah!" },
+        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "Nope" },
+        
+    };
+    const SDL_MessageBoxColorScheme colorScheme = {
+        { 
+            { 85,   85,   85 },
+            {   255, 255,   255 },
+            { 255, 255,   255 },
+            {   170,   170, 170 },
+            { 255,   255, 0 }
+        }
+    };
+
+    const SDL_MessageBoxData messageboxdata = {
+        SDL_MESSAGEBOX_INFORMATION,
+        NULL, 
+        "Quit already?", 
+        "Are you sure you want to quit?", 
+        SDL_arraysize(buttons),
+        buttons,
+        &colorScheme
+    };
+
+    int buttonid;
+    if (SDL_ShowMessageBox(&messageboxdata, &buttonid) < 0) 
+    {
+        printf("Error displaying a message box!\n");
+        return;
+    }
+
+    if (buttonid == 0)
+    {
+        isRunning = false;
+    }
+}
+
 /// Calculate canvas size and position on screen
 /// < winWidth Window width
 /// < winHeight Window height
@@ -86,7 +126,7 @@ static void app_calc_canvas_prop(int winWidth, int winHeight)
 static int app_init_SDL()
 {   
     // Init
-    if(SDL_Init(SDL_INIT_EVENTS | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) != 0)
+    if(SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO) != 0)
     {
         printf("Failed to init SDL!\n");
         return 1;
@@ -120,15 +160,6 @@ static int app_init_SDL()
 
     // Hide mouse cursor
     SDL_ShowCursor(0);
-
-    // Open joystick
-    joy = SDL_JoystickOpen(0);
-
-    // Init audio
-    if(audio_init() == 1)
-    {
-        return 1;
-    }
 
     return 0;
 }
@@ -242,82 +273,6 @@ static void app_events()
             ctr_on_key_up(event.key.keysym.scancode);
             break;
 
-        // Mouse down event
-        case SDL_MOUSEBUTTONDOWN:
-            ctr_on_mouse_down((int)event.button.button);
-            break;
-        // Key up event
-        case SDL_MOUSEBUTTONUP:
-            ctr_on_mouse_up((int)event.button.button);
-            break;
-        // Mouse move enent
-        case SDL_MOUSEMOTION:
-            ctr_on_mouse_move(event.motion.x,event.motion.y);
-            break;
-        // Mouse wheel event
-        case SDL_MOUSEWHEEL:
-            ctr_on_mouse_wheel(event.wheel.y);
-            break;
-
-        // Joy button down
-        case SDL_JOYBUTTONDOWN:
-            ctr_on_joy_down(event.jbutton.button);
-            break;
-
-        // Joy button up
-        case SDL_JOYBUTTONUP:
-            ctr_on_joy_up(event.jbutton.button);
-            break;
-
-        // Joy axis
-        case SDL_JOYAXISMOTION:
-        {
-            int axis = 0;
-            if(event.jaxis.axis == 0)
-                axis = 0;
-            else if(event.jaxis.axis == 1)
-                axis = 1;
-            else 
-                break;
-
-            float value = (float)event.jaxis.value / 32767.0f;
-
-            ctr_on_joy_axis(axis,value);
-            
-            break;
-        }
-
-        // Joy hat
-        case SDL_JOYHATMOTION:
-        {
-            int v = event.jhat.value;
-            VEC2 stick = vec2(0.0f,0.0f);
-            if(v == SDL_HAT_LEFTUP || v == SDL_HAT_LEFT || v == SDL_HAT_LEFTDOWN)
-            {
-                stick.x = -1.0f;
-            }
-
-            if(v == SDL_HAT_RIGHTUP || v == SDL_HAT_RIGHT || v == SDL_HAT_RIGHTDOWN)
-            {
-                stick.x = 1.0f;
-            }
-
-            if(v == SDL_HAT_LEFTUP || v == SDL_HAT_UP || v == SDL_HAT_RIGHTUP)
-            {
-                stick.y = -1.0f;
-            }
-
-            if(v == SDL_HAT_LEFTDOWN || v == SDL_HAT_DOWN || v == SDL_HAT_RIGHTDOWN)
-            {
-                stick.y = 1.0f;
-            }
-
-            ctr_on_joy_axis(0,stick.x);
-            ctr_on_joy_axis(1,stick.y);
-
-            break;
-        }
-
         default:
             break;
         }
@@ -357,6 +312,11 @@ static void app_update(Uint32 delta)
     if(globalScene.on_update != NULL)
     {
         globalScene.on_update(tm);
+    }
+    
+    if(get_key_state((int)SDL_SCANCODE_ESCAPE) == PRESSED)
+    {
+        ask_to_quit();
     }
 
     ctr_update();

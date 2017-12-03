@@ -27,6 +27,8 @@ static BITMAP* bmpLogo;
 static BITMAP* bmpDollars;
 /// Font bitmap
 static BITMAP* bmpFont;
+/// "Created by" bitmap
+static BITMAP* bmpCreator;
 /// Angle
 static float angle;
 /// Title timer
@@ -48,10 +50,11 @@ int title_init()
     bmpLogo = get_bitmap("logo");
     bmpDollars = get_bitmap("dollars");
     bmpFont = get_bitmap("font2");
+    bmpCreator = get_bitmap("creator");
 
     angle = 0.0f;
 
-    titlePhase = 0;
+    titlePhase = 3;
     titleTimer = 0.0f;
 
     return 0;
@@ -87,11 +90,28 @@ void title_update(float tm)
             app_swap_scene("game");
         }
     }
+    // "Create by" screen
+    else if(titlePhase == 3)
+    {
+        titleTimer += 1.0f * tm;
+        if(titleTimer >= 150.0f)
+        {
+            titleTimer = 0.0f;
+            titlePhase = 0;
+        }
+    }
 }
 
 /// Draw title screen
 void title_draw()
 {
+    // "Created by"
+    if(titlePhase == 3)
+    {
+        draw_bitmap(bmpCreator,0,0,0);
+        return;
+    }
+
     int skip = 0;
 
     if(!frameDrawn)

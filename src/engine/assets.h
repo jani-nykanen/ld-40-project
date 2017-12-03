@@ -5,8 +5,6 @@
 #define __ASSETS__
 
 #include "bitmap.h"
-#include "tilemap.h"
-#include "audio.h"
 
 /// Load assets from an asset list file
 /// < path List path
@@ -17,16 +15,6 @@ int load_assets(const char* path);
 /// < name Bitmap name
 /// > A bitmap, NULL if not exist
 BITMAP* get_bitmap(const char* name);
-
-/// Get sound by name
-/// < name Sound name
-/// > A sound, NULL if not exist
-SOUND* get_sound(const char* name);
-
-/// Get tilemap by name
-/// < name Tilemap name
-/// > A tilemap, NULL if not exist
-TILEMAP* get_tilemap(const char* name);
 
 /// Destroy loaded asset files
 void destroy_assets();

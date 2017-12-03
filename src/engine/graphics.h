@@ -9,7 +9,6 @@
 #include "bitmap.h"
 #include "frame.h"
 #include "vector.h"
-#include "tilemap.h"
 
 /// Flipping enumerations
 enum
