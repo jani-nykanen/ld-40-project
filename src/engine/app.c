@@ -128,7 +128,7 @@ static int app_init_SDL()
     // Init
     if(SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO) != 0)
     {
-        printf("Failed to init SDL!\n");
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR,"Error!","Failed to init SDL!\n",NULL);
         return 1;
     }
 
@@ -143,7 +143,7 @@ static int app_init_SDL()
 				              windowWidth, windowHeight, SDL_WINDOW_RESIZABLE);
 	if(window == NULL)
 	{
-		printf("Failed to create an SDL window!\n");
+		SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR,"Error!","Failed to create an SDL window!\n",NULL);
         return 1;
 	}
 
@@ -154,7 +154,7 @@ static int app_init_SDL()
     rend = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE);
     if(rend == NULL)
     {
-        printf("Failed to create an SDL renderer!\n");
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR,"Error!","Failed to create an SDL renderer!\n",NULL);
         return 1;
     }
 

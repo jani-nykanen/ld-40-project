@@ -7,6 +7,8 @@
 #include "../engine/graphics.h"
 #include "../engine/controls.h"
 
+#include "math.h"
+
 #include "stage.h"
 
 /// Player bitmap

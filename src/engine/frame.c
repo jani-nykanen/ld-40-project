@@ -30,18 +30,6 @@ void fr_gen_palette()
         palette[i*3] = r *85;
         palette[i*3 +1] = g *85;
         palette[i*3 +2] = b *85;
-
-        palette[i*3 + 64*3] = palette[i*3] > 0 ? palette[i*3] -85 : 0;
-        palette[i*3 + 64*3 +1] = palette[i*3 +1] > 0 ? palette[i*3 +1] -85 : 0;
-        palette[i*3 + 64*3 +2] = palette[i*3 +2] > 0 ? palette[i*3 +2] -85 : 0;
-
-        palette[i*3 + 128*3] = palette[i*3+ 64*3] > 0 ? palette[i*3+ 64*3] -85 : 0;
-        palette[i*3 + 128*3 +1] = palette[i*3+ 64*3 +1] > 0 ? palette[i*3+ 64*3 +1] -85 : 0;
-        palette[i*3 + 128*3 +2] = palette[i*3+ 64*3 +2] > 0 ? palette[i*3+ 64*3 +2] -85 : 0;
-
-        palette[i*3 + 192*3] = palette[i*3+ 128*3] > 0 ? palette[i*3+ 128*3] -85 : 0;
-        palette[i*3 + 192*3 +1] = palette[i*3+ 128*3 +1] > 0 ? palette[i*3+ 128*3 +1] -85 : 0;
-        palette[i*3 + 192*3 +2] = palette[i*3+ 128*3 +2] > 0 ? palette[i*3+ 128*3 +2] -85 : 0;
     }
 }
 

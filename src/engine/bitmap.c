@@ -17,7 +17,7 @@ BITMAP* load_bitmap(const char* path)
     BITMAP* bmp = (BITMAP*)malloc(sizeof(BITMAP));
     if(bmp == NULL)
     {
-        printf("Failed to allocate memory for a bitmap!\n");
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR,"Error!","Failed to allocate memory for a bitmap!\n",NULL);
         return NULL;
     }
 
@@ -25,7 +25,10 @@ BITMAP* load_bitmap(const char* path)
     SDL_Surface* surf = IMG_Load(path);
     if(surf == NULL)
     {
-        printf("Failed to load a bitmap in %s!\n",path);
+        char err[128];
+        snprintf(err,128,"Failed to load a bitmap in %s!",path);
+
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR,"Error!",err,NULL);
         return NULL;
     }
 
@@ -38,7 +41,7 @@ BITMAP* load_bitmap(const char* path)
     bmp->data = (Uint8*)malloc(sizeof(Uint8) * pixelCount);
     if(bmp->data == NULL) 
     {
-        printf("Failed to allocate memory for a bitmap!\n");
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR,"Error!","Failed to allocate memory for a bitmap!\n",NULL);
         return NULL;
     }
 
