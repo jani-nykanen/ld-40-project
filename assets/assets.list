@@ -1,0 +1,14 @@
+# A list of assets
+# Bitmaps
+bitmap font assets/bitmaps/font.png
+bitmap font2 assets/bitmaps/font2.png
+bitmap obstacles assets/bitmaps/obstacles.png
+bitmap figure assets/bitmaps/figure.png
+bitmap tiles assets/bitmaps/tiles.png
+bitmap bush assets/bitmaps/bush.png
+bitmap sky assets/bitmaps/sky.png
+bitmap hills assets/bitmaps/hills.png
+bitmap fish assets/bitmaps/fish.png
+bitmap heart assets/bitmaps/heart.png
+bitmap coin assets/bitmaps/coin.png
+bitmap gameover assets/bitmaps/gameover.png
