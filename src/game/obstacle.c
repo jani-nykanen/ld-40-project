@@ -98,6 +98,15 @@ void ob_update(OBSTACLE* o, PLAYER* pl, float tm)
     }
     break;
 
+    case O_GOAL:
+    {
+        if(pl->pos.x >= o->pos.x+12)
+        {
+            pl->victorous = true;
+        }
+    }
+    break;
+
     default:
         break;
     }
@@ -157,6 +166,12 @@ void ob_draw(OBSTACLE* o)
     }
     break;
 
+    case O_GOAL:
+    {
+        draw_bitmap_region(bmpObstacle,0,60,24,24,o->pos.x,o->pos.y,0);
+    }
+    break;
+
     default:
         break;
     }
@@ -200,6 +215,12 @@ void push_obstacle(OBSTACLE* o, int type)
     {
         o->pos.x += (float) (rand() % 24);
         o->pos.y = 24 + (float) (rand() % 48 );
+    }
+    break;
+
+    case O_GOAL:
+    {
+        o->pos.y = 96-36;
     }
     break;
 

@@ -15,6 +15,7 @@ enum
     O_PLANT = 1,
     O_FLYING = 2,
     O_FISH = 3,
+    O_GOAL = 4,
 };
 
 /// Obstacle structure

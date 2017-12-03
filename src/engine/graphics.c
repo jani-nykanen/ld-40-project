@@ -201,8 +201,10 @@ void draw_inverted_bitmap(BITMAP* b, int dx, int dy, int flip)
 }
 
 /// Draw a rotated bitmap area
-void draw_rotated_bitmap_area(BITMAP* b,  float trx, float try, float angle)
+void draw_rotated_bitmap_area(BITMAP* b,  float trx, float try, int skip, float angle)
 {
+    skip ++;
+
     // Rotation matrix B
     float b11 = cos(angle), b21 = -sin(angle);
     float b12 = sin(angle), b22 = cos(angle);
@@ -238,6 +240,9 @@ void draw_rotated_bitmap_area(BITMAP* b,  float trx, float try, float angle)
     {
         for(y = 0; y < gframe->h; y++)
         {
+            if(!(skip == 0 || (x % skip == 0 && y % skip == 0) ) )
+                continue;
+
             // Translate point
             xx = x - cx;
             yy = y - cy;
@@ -253,6 +258,7 @@ void draw_rotated_bitmap_area(BITMAP* b,  float trx, float try, float angle)
             while(tx < 0) tx += b->w;
             while(ty < 0) ty += b->h;
 
+            
             color = b->data[ty*b->w +tx];
             ppfunc(x,y, color);
         }

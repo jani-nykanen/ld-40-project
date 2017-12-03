@@ -12,3 +12,6 @@ bitmap fish assets/bitmaps/fish.png
 bitmap heart assets/bitmaps/heart.png
 bitmap coin assets/bitmaps/coin.png
 bitmap gameover assets/bitmaps/gameover.png
+bitmap great assets/bitmaps/great.png
+bitmap logo assets/bitmaps/logo.png
+bitmap dollars assets/bitmaps/dollars.png

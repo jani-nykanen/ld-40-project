@@ -8,12 +8,7 @@
 #include "../engine/bitmap.h"
 #include "../engine/controls.h"
 #include "../engine/assets.h"
-#include "../engine/tilemap.h"
-#include "../engine/audio.h"
 #include "../engine/transform.h"
-#include "../engine/mesh.h"
-
-#include "../vpad.h"
 
 #include "stage.h"
 #include "player.h"
@@ -40,6 +35,12 @@ static float obsTimer;
 static float fishTimer;
 /// Phase
 static int phase;
+/// Interval count
+static int intervalCount;
+/// Interval goal
+static int intervalGoal;
+/// Goal create
+static bool goalCreated;
 
 /// Bitmap font
 static BITMAP* bmpFont;
@@ -49,6 +50,8 @@ static BITMAP* bmpFont2;
 static BITMAP* bmpHeart;
 /// Game over bitmap
 static BITMAP* bmpGameOver;
+/// Great! bitmap
+static BITMAP* bmpGreat;
 
 /// Game over frame
 static FRAME* goverFrame;
@@ -64,12 +67,23 @@ static int hintIndex;
 /// Push obstacle to the game world
 static void push_obs()
 {
+    if(goalCreated) return;
+
+    int index = rand() % 3;
+
+    intervalCount ++;
+    if(intervalCount == intervalGoal)
+    {
+        goalCreated = true;
+        index = 4;
+    }
+
     int i = 0;
     for(; i < OBS_COUNT; i++)
     {
         if(obstacles[i].exist == false)
         {
-            push_obstacle(&obstacles[i],rand() % 3);
+            push_obstacle(&obstacles[i],index);
             return;
         }
     }
@@ -78,7 +92,9 @@ static void push_obs()
 /// Push coins
 static void push_coins()
 {   
-    if(rand() % 3 == 0) return;
+    int m = intervalCount < 10 ? 5 : 3;
+
+    if(rand() % m == 0 || goalCreated) return;
 
     float posy = 24 + (float) (rand() % 48) ;
     float posx = 128 + (float) (rand() % 24 + 16);
@@ -107,6 +123,9 @@ static void push_coins()
 /// Push some nice fish
 static void push_fish()
 {
+    if(goalCreated)
+        return;
+
     int i = 0;
     for(; i < OBS_COUNT; i++)
     {
@@ -136,6 +155,9 @@ static void game_reset()
     fishTimer = interval * (0.5f + (float)(rand() % 3 + 1));
     gameOver = false;
     goverTimer = 0.0f;
+    intervalCount = 0;
+    intervalGoal = 20;
+    goalCreated = false;
 }
 
 /// Init game
@@ -158,12 +180,17 @@ static int game_init()
     gameOver = false;
     hintIndex = 0;
     goverTimer = 0.0f;
+    intervalCount = 0;
+    intervalGoal = 20;
+    goalCreated = false;
+    drawMoney = false;
 
     // Get bitmaps
     bmpFont = get_bitmap("font");
     bmpHeart = get_bitmap("heart");
     bmpGameOver = get_bitmap("gameover");
     bmpFont2 = get_bitmap("font2");
+    bmpGreat = get_bitmap("great");
 
     // Create frame
     goverFrame = frame_create(128,96);
@@ -174,8 +201,6 @@ static int game_init()
     return 0;
 }
 
-/// Forward declaration
-static void game_draw();
 /// Update game
 /// tm Time multiplier
 static void game_update(float tm)
@@ -230,12 +255,12 @@ static void game_update(float tm)
     // Set phase & interval
     phase = (int)floor(pl.money / 10);
     interval = 100.0f - phase*7.5f;
+    intervalGoal = 20 + pl.money * (phase+1);
 
     // Game over?
     drawMoney = true;
-    if(pl.health <= 0)
+    if(pl.health <= 0 || pl.victorous)
     {
-        
         drawMoney = false;
         game_draw();
         copy_frame(get_current_frame(),goverFrame);
@@ -248,7 +273,7 @@ static void game_update(float tm)
 }
 
 /// Draw game
-static void game_draw()
+void game_draw()
 {
     clear_frame(0b00101010);
 
@@ -263,15 +288,24 @@ static void game_draw()
         }
         else
         {
-            draw_bitmap(bmpGameOver,0,16,0);
+            if(pl.victorous)
+            {
+                draw_bitmap(bmpGreat,64-32,16,0);
+                draw_text(bmpFont2,(Uint8*)"You beat the\ngame... and\nno one cares!",64,16,44,-1,12,false);
+            }
+            else
+            {
+                draw_bitmap(bmpGameOver,0,16,0);
 
-            // The Ludum Dare way to do these things:
-            if(hintIndex == 0)
-                draw_text(bmpFont2,(Uint8*)"HINT: Collect\nmore money!",64,16,48,-1,12,false);
-            else if(hintIndex == 1)
-                draw_text(bmpFont2,(Uint8*)"HINT: Want to win?\nCollect money!",64,1,48,-1,12,false);
-            else if(hintIndex == 2)
-                draw_text(bmpFont2,(Uint8*)"HINT: Money is\nyour goal!",64,12,48,-1,12,false);
+                // The Ludum Dare way to do these things:
+                if(hintIndex == 0)
+                    draw_text(bmpFont2,(Uint8*)"HINT: Collect\nmore money!",64,16,48,-1,12,false);
+                else if(hintIndex == 1)
+                    draw_text(bmpFont2,(Uint8*)"HINT: Want to win?\nCollect money!",64,1,48,-1,12,false);
+                else if(hintIndex == 2)
+                    draw_text(bmpFont2,(Uint8*)"HINT: Money is\nyour goal!",64,12,48,-1,12,false);
+
+            }
         }
 
         return;

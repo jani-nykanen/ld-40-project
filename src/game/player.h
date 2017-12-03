@@ -21,6 +21,7 @@ typedef struct
     int health;
     int money;
     float hurtTimer;
+    bool victorous;
 
 }PLAYER;
 

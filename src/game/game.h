@@ -10,4 +10,7 @@
 /// > Game scene
 SCENE get_game_scene();
 
+/// Draw game
+void game_draw();
+
 #endif // __GAME_SCENE__

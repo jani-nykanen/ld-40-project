@@ -115,6 +115,7 @@ PLAYER create_player()
     pl.health = 3;
     pl.hurtTimer = 0.0f;
     pl.money = 0;
+    pl.victorous = false;
 
     return pl;
 }

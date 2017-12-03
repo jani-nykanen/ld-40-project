@@ -75,8 +75,9 @@ void draw_inverted_bitmap(BITMAP* b, int dx, int dy, int flip);
 /// < b Bitmap to be drawn
 /// < trx X translation
 /// < try Y translation
+/// < skip Skipping value
 /// < angle Rotation angle
-void draw_rotated_bitmap_area(BITMAP* b, float trx, float try, float angle);
+void draw_rotated_bitmap_area(BITMAP* b, float trx, float _try, int skip, float angle);
 
 /// Draw a bitmap region
 /// < b Bitmap to be drawn
